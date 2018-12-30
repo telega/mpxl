@@ -1,0 +1,6 @@
+{
+    "name": "Pixelsort",
+    "main": "pixelsort.js",
+    "tools": ["SQUARE"],
+    "options": []
+}
