@@ -77,7 +77,6 @@ export class P5Sketch {
     };
 
     p.mouseDragged = () => {
-      console.log(p.mouxeX);
       if (!this.store.pluginActive) {
         if (this.store.mouseReleased) {
           this.store.setPoint({ x: p.mouseX, y: p.mouseY });
@@ -164,6 +163,11 @@ export class P5Sketch {
       if (this.store.selectedPlugin && this.store.pluginActive) {
         this.store.selectedPlugin.plugin(p, this.store.toolData());
         this.store.setPixels(p.pixels);
+      }
+
+      if (this.store.shouldSave) {
+        p.saveCanvas(`Untitled-${this.store.saveCount}`, 'png');
+        this.store.resetShouldSave();
       }
     };
   };

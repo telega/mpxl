@@ -64,6 +64,12 @@ export class Store {
   @observable
   selectedPlugin: Plugin = null;
 
+  @observable
+  shouldSave: boolean = false;
+
+  @observable
+  saveCount: number = 0;
+
   private ipcRenderer: IpcRenderer;
 
   constructor() {
@@ -72,10 +78,30 @@ export class Store {
     this.ipcRenderer.on('loadImage', (event: any, filePath: string) => {
       this.setFilePath(filePath); // TODO move this function , async it
     });
+
+    this.ipcRenderer.on('saveImage', (event: any) => {
+      this.augmentSaveCount();
+      this.setShouldSave();
+    });
   }
 
   init = async () => {
     this.loadPlugins();
+  };
+
+  @action
+  setShouldSave = () => {
+    this.shouldSave = true;
+  };
+
+  @action
+  resetShouldSave = () => {
+    this.shouldSave = false;
+  };
+
+  @action
+  augmentSaveCount = () => {
+    this.saveCount = this.saveCount + 1;
   };
 
   @action

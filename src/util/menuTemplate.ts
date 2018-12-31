@@ -32,6 +32,13 @@ export function getMenu(
           },
           accelerator: 'CmdOrCtrl+O',
         },
+        {
+          label: 'Save',
+          click() {
+            mainWindow.webContents.send('saveImage');
+          },
+          accelerator: 'CmdOrCtrl+S',
+        },
         // {
         //     label: 'Quit',
         //     click() {
