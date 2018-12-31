@@ -13,19 +13,9 @@ export interface IImagePanelProps {
 
 @observer
 export class ImagePanel extends React.Component<IImagePanelProps, any> {
-  //   public activePlugin: any;
+  public sketch = new P5Sketch(this.props.store);
 
-  public sketch = new P5Sketch(this.props.store, this.props.plugin);
-
-  //   constructor(props: IImagePanelProps) {
-  //     super(props);
-
-  //     if (this.props.store.availablePlugins.length > 0) {
-  //       this.activePlugin = this.props.store.availablePlugins[0].plugin;
-  //     }
-  //   }
-
-  render() {
+  public render() {
     return (
       <div className={'imagePanel'}>
         <P5Wrapper sketch={this.sketch} filePath={this.props.store.filePath} />

@@ -23,6 +23,10 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
     });
   };
 
+  public renderPluginOptions = () => {
+    return null;
+  };
+
   public renderToolButtons = () => {
     const availableTools = this.props.store.selectedPlugin
       ? this.props.store.selectedPlugin.tools
@@ -70,6 +74,15 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
         <br />
         {this.renderToolButtons()}
         <br />
+        {this.renderPluginOptions()}
+        <button
+          disabled={this.props.store.selectedPlugin ? false : true}
+          onClick={() => {
+            this.props.store.togglePlugin();
+          }}>
+          Apply
+        </button>
+        <hr />
         {this.props.store.point && (
           <div>
             {this.props.store.point.x} | {this.props.store.point.y}

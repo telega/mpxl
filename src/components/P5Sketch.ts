@@ -2,13 +2,13 @@ import { Store, Point, ToolType } from '../stores/store';
 
 export class P5Sketch {
   public store: Store;
-  public plugin: (p: any, toolData: any) => any;
+  //public plugin: (p: any, toolData: any) => any;
 
-  constructor(store: Store, plugin?: any) {
+  constructor(store: Store) {
     this.store = store;
-    if (this.store.selectedPlugin) {
-      this.plugin = this.store.selectedPlugin.plugin;
-    }
+    // if (this.store.selectedPlugin) {
+    //   this.plugin = this.store.selectedPlugin.plugin;
+    // }
   }
 
   public sketch = (p: any) => {
@@ -77,6 +77,7 @@ export class P5Sketch {
     };
 
     p.mouseDragged = () => {
+      console.log(p.mouxeX);
       if (!this.store.pluginActive) {
         if (this.store.mouseReleased) {
           this.store.setPoint({ x: p.mouseX, y: p.mouseY });
@@ -160,8 +161,8 @@ export class P5Sketch {
         p.drawToolArea();
       }
 
-      if (this.plugin && this.store.pluginActive) {
-        this.plugin(p, this.store.toolData());
+      if (this.store.selectedPlugin && this.store.pluginActive) {
+        this.store.selectedPlugin.plugin(p, this.store.toolData());
         this.store.setPixels(p.pixels);
       }
     };
