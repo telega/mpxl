@@ -80,7 +80,7 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
           onClick={() => {
             this.props.store.togglePlugin();
           }}>
-          Apply
+          {this.props.store.pluginActive ? 'Stop' : 'Apply'}
         </button>
         <hr />
         {this.props.store.point && (
