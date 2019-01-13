@@ -24,7 +24,14 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
   };
 
   public renderPluginOptions = () => {
-    return null;
+    if (!this.props.store.selectedPlugin) {
+      return null;
+    }
+    return this.props.store.selectedPlugin.controls.map(
+      (controlItem, index) => (
+        <div key={`pluginControl-${index}`}>{controlItem.label}</div>
+      )
+    );
   };
 
   public renderToolButtons = () => {

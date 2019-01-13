@@ -13,11 +13,21 @@ export interface Point {
   y: number;
 }
 
+export interface PluginControls {
+  label: string;
+  name: string;
+  options: PluginOptions[];
+}
+
+export interface PluginOptions {
+  value: string;
+}
+
 export interface Plugin {
   name: string;
   plugin: (p: any, toolData: any) => void;
   tools: ToolType[];
-  options: any[];
+  controls: any[];
 }
 
 export enum ToolType {
@@ -139,7 +149,7 @@ export class Store {
           name: pluginDescription.name,
           plugin: parseFunction(pluginFile),
           tools: pluginDescription.tools,
-          options: pluginDescription.options,
+          controls: pluginDescription.controls,
         } as Plugin;
       })
     );

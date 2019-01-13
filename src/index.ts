@@ -4,8 +4,6 @@ import installExtension, {
 } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 import { getMenu } from './util/menuTemplate';
-// import * as fs from 'fs';
-import * as path from 'path';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -16,18 +14,6 @@ const isDevMode = process.execPath.match(/[\\/]electron/);
 if (isDevMode) {
   enableLiveReload({ strategy: 'react-hmr' });
 }
-
-// plugin experiment
-
-// const pluginPath = path.join(__dirname, '/../../plugins');
-// console.log(pluginPath);
-
-// let fp = path.join(pluginPath, 'pixelsort.js');
-// console.log(fp);
-// let p = require(fp);
-
-// console.log(p);
-// end plugin experiment
 
 const createWindow = async () => {
   // Create the browser window.
