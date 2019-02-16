@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 import { parseFunction } from '../util/parseFunction';
+import * as controlForm from './controlForm';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -28,6 +29,10 @@ export interface Plugin {
   plugin: (p: any, toolData: any) => void;
   tools: ToolType[];
   controls: any[];
+}
+
+export interface SelectedToolOptions {
+  [key: string]: any;
 }
 
 export enum ToolType {
@@ -66,6 +71,9 @@ export class Store {
   selectedTool: ToolType = null;
 
   @observable
+  toolControlOptions: SelectedToolOptions = {};
+
+  @observable
   mouseReleased: boolean = true;
 
   @observable
@@ -80,6 +88,9 @@ export class Store {
   @observable
   saveCount: number = 0;
 
+  @observable
+  form: any;
+
   private ipcRenderer: IpcRenderer;
 
   constructor() {
@@ -93,6 +104,8 @@ export class Store {
       this.augmentSaveCount();
       this.setShouldSave();
     });
+
+    this.form = controlForm;
   }
 
   init = async () => {
@@ -117,6 +130,7 @@ export class Store {
   @action
   setSelectedPlugin = (plugin: Plugin) => {
     this.selectedPlugin = plugin;
+    this.setInitialToolControlOptions();
   };
 
   @action
@@ -255,6 +269,19 @@ export class Store {
       selectedTool: toJS(this.selectedTool),
       point: toJS(this.point),
       endPoint: toJS(this.endPoint),
+      controlOptions: toJS(this.toolControlOptions),
     };
+  };
+
+  @action
+  setToolControlOption = (option: string, value: any) => {
+    this.toolControlOptions[option] = value;
+  };
+
+  @action setInitialToolControlOptions = () => {
+    this.selectedPlugin.controls.forEach(controlItem => {
+      const defaultOption = controlItem.options.find(option => option);
+      this.setToolControlOption(controlItem.name, defaultOption.value);
+    });
   };
 }

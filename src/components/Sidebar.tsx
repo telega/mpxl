@@ -2,6 +2,7 @@ import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Store, ToolType } from '../stores/store';
 import * as _ from 'lodash';
+import {Select} from 'grommet'
 
 export interface ISidebarProps {
   store: Store;
@@ -24,15 +25,25 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
   };
 
   public renderPluginOptions = () => {
-    if (!this.props.store.selectedPlugin) {
+
+    const {store} = this.props
+
+    if (!store.selectedPlugin) {
       return null;
     }
-    return this.props.store.selectedPlugin.controls.map(
+    return store.selectedPlugin.controls.map(
       (controlItem, index) => (
-        <div key={`pluginControl-${index}`}>{controlItem.label}</div>
+        <div key={`pluginControl-${index}`}>{controlItem.label}
+          <Select 
+          options = { controlItem.options.map( option => option.value) } 
+          onChange={(e)=> store.setToolControlOption(controlItem.name, e.value )}
+          value = {store.toolControlOptions[controlItem.name]}
+           />
+        </div>
       )
     );
   };
+
 
   public renderToolButtons = () => {
     const availableTools = this.props.store.selectedPlugin
@@ -82,6 +93,9 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
         {this.renderToolButtons()}
         <br />
         {this.renderPluginOptions()}
+
+        <br />
+
         <button
           disabled={this.props.store.selectedPlugin ? false : true}
           onClick={() => {

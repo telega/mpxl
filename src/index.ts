@@ -18,10 +18,10 @@ if (isDevMode) {
 const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    minHeight: 600,
-    minWidth: 900,
-    maxHeight: 600,
-    maxWidth: 900,
+    minHeight: 900,
+    minWidth: 1200,
+    maxHeight: 900,
+    maxWidth: 1200,
     webPreferences: {
       webSecurity: false,
     },
