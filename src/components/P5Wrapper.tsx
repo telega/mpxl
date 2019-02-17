@@ -13,8 +13,8 @@ export default class P5Wrapper extends React.Component<IP5WrapperProps, any> {
 
   componentDidMount() {
     this.canvas = new p5(this.props.sketch.sketch, this.wrapper);
-    if (this.canvas.myCustomRedrawAccordingToNewPropsHandler) {
-      this.canvas.myCustomRedrawAccordingToNewPropsHandler(this.props);
+    if (this.canvas.newPropsHandler) {
+      this.canvas.newPropsHandler(this.props);
     }
   }
 
@@ -23,8 +23,8 @@ export default class P5Wrapper extends React.Component<IP5WrapperProps, any> {
       this.wrapper.removeChild(this.wrapper.childNodes[0]);
       this.canvas = new p5(newprops.sketch.sketch as any, this.wrapper);
     }
-    if (this.canvas.myCustomRedrawAccordingToNewPropsHandler) {
-      this.canvas.myCustomRedrawAccordingToNewPropsHandler(newprops);
+    if (this.canvas.newPropsHandler) {
+      this.canvas.newPropsHandler(newprops);
     }
   }
 

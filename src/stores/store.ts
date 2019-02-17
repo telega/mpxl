@@ -4,7 +4,6 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
 import { parseFunction } from '../util/parseFunction';
-import * as controlForm from './controlForm';
 
 const readdir = promisify(fs.readdir);
 const readFile = promisify(fs.readFile);
@@ -96,16 +95,14 @@ export class Store {
   constructor() {
     this.ipcRenderer = ipcRenderer;
 
-    this.ipcRenderer.on('loadImage', (event: any, filePath: string) => {
+    this.ipcRenderer.on('loadImage', (_event: any, filePath: string) => {
       this.setFilePath(filePath); // TODO move this function , async it
     });
 
-    this.ipcRenderer.on('saveImage', (event: any) => {
+    this.ipcRenderer.on('saveImage', (_event: any) => {
       this.augmentSaveCount();
       this.setShouldSave();
     });
-
-    this.form = controlForm;
   }
 
   init = async () => {
@@ -281,7 +278,9 @@ export class Store {
   @action setInitialToolControlOptions = () => {
     this.selectedPlugin.controls.forEach(controlItem => {
       const defaultOption = controlItem.options.find(option => option);
-      this.setToolControlOption(controlItem.name, defaultOption.value);
+      if (!this.toolControlOptions[controlItem.name]) {
+        this.setToolControlOption(controlItem.name, defaultOption.value);
+      }
     });
   };
 }

@@ -2,18 +2,18 @@ import { Store, Point, ToolType } from '../stores/store';
 
 export class P5Sketch {
   public store: Store;
-  //public plugin: (p: any, toolData: any) => any;
 
   constructor(store: Store) {
     this.store = store;
-    // if (this.store.selectedPlugin) {
-    //   this.plugin = this.store.selectedPlugin.plugin;
-    // }
   }
 
   public sketch = (p: any) => {
     let img: any;
     let imgCopy: any;
+
+    p.setup = function() {
+      p.createCanvas(600, 600, p.P2D);
+    };
 
     p.loadImageData = (filePath: string) => {
       this.store.resetPixels();
@@ -31,11 +31,7 @@ export class P5Sketch {
       });
     };
 
-    p.setup = function() {
-      p.createCanvas(600, 600, p.P2D);
-    };
-
-    p.myCustomRedrawAccordingToNewPropsHandler = async function(props: any) {
+    p.newPropsHandler = async function(props: any) {
       if (props.filePath) {
         await p.loadImageData(props.filePath);
       }
@@ -84,6 +80,13 @@ export class P5Sketch {
           this.store.resetMouseReleased();
         } else {
           this.store.setEndPoint({ x: p.mouseX, y: p.mouseY });
+        }
+
+        if (!this.store.point) {
+          this.store.setPoint({
+            x: p.mouseX,
+            y: p.mouseY,
+          });
         }
 
         this.store.setDistance(
@@ -163,6 +166,7 @@ export class P5Sketch {
       if (this.store.selectedPlugin && this.store.pluginActive) {
         this.store.selectedPlugin.plugin(p, this.store.toolData());
         this.store.setPixels(p.pixels);
+        this.store.togglePlugin();
       }
 
       if (this.store.shouldSave) {

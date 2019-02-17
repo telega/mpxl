@@ -39,13 +39,13 @@ export function getMenu(
           },
           accelerator: 'CmdOrCtrl+S',
         },
-        // {
-        //     label: 'Quit',
-        //     click() {
-        //         app.quit();
-        //     },
-        //     accelerator: 'CmdOrCtrl+Q',
-        // },
+        {
+          label: 'Quit',
+          click() {
+            app.quit();
+          },
+          accelerator: 'CmdOrCtrl+Q',
+        },
       ],
     },
     {

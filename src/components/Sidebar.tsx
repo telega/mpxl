@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Store, ToolType } from '../stores/store';
 import * as _ from 'lodash';
-import {Select} from 'grommet'
+import { Select, Button } from 'grommet';
 
 export interface ISidebarProps {
   store: Store;
@@ -11,80 +11,90 @@ export interface ISidebarProps {
 @observer
 export class Sidebar extends React.Component<ISidebarProps, any> {
   public renderPluginButtons = () => {
-    return this.props.store.availablePlugins.map((plugin, i) => {
+    const { store } = this.props;
+    return store.availablePlugins.map((plugin, i) => {
       return (
-        <button
+        <Button
+          label={plugin.name}
           key={i}
           onClick={() => {
-            this.props.store.setSelectedPlugin(plugin);
-          }}>
-          {plugin.name}
-        </button>
+            store.setSelectedPlugin(plugin);
+          }}
+          active={store.selectedPlugin === plugin}
+        />
       );
     });
   };
 
   public renderPluginOptions = () => {
-
-    const {store} = this.props
+    const { store } = this.props;
 
     if (!store.selectedPlugin) {
       return null;
     }
-    return store.selectedPlugin.controls.map(
-      (controlItem, index) => (
-        <div key={`pluginControl-${index}`}>{controlItem.label}
-          <Select 
-          options = { controlItem.options.map( option => option.value) } 
-          onChange={(e)=> store.setToolControlOption(controlItem.name, e.value )}
-          value = {store.toolControlOptions[controlItem.name]}
-           />
-        </div>
-      )
-    );
+    return store.selectedPlugin.controls.map((controlItem, index) => (
+      <div key={`pluginControl-${index}`}>
+        {controlItem.label}
+        <Select
+          options={controlItem.options.map(option => option.value)}
+          onChange={(e: any) =>
+            store.setToolControlOption(controlItem.name, e.value)
+          }
+          value={store.toolControlOptions[controlItem.name]}
+        />
+      </div>
+    ));
   };
 
-
   public renderToolButtons = () => {
-    const availableTools = this.props.store.selectedPlugin
-      ? this.props.store.selectedPlugin.tools
+    const { store } = this.props;
+    const availableTools = store.selectedPlugin
+      ? store.selectedPlugin.tools
       : [];
 
     return (
       <div>
-        <button
+        <Button
+          label="Point"
           disabled={!_.includes(availableTools, ToolType.Point)}
           onClick={() => {
-            this.props.store.setTool(ToolType.Point);
-          }}>
-          Point
-        </button>
-        <button
+            store.setTool(ToolType.Point);
+          }}
+          active={store.selectedTool === ToolType.Point}
+        />
+
+        <Button
+          label="Square"
           disabled={!_.includes(availableTools, ToolType.Square)}
           onClick={() => {
-            this.props.store.setTool(ToolType.Square);
-          }}>
-          Square
-        </button>
-        <button
+            store.setTool(ToolType.Square);
+          }}
+          active={store.selectedTool === ToolType.Square}
+        />
+
+        <Button
+          label="Circle"
           disabled={!_.includes(availableTools, ToolType.Square)}
           onClick={() => {
-            this.props.store.setTool(ToolType.Circle);
-          }}>
-          Circle
-        </button>
-        <button
+            store.setTool(ToolType.Circle);
+          }}
+          active={store.selectedTool === ToolType.Circle}
+        />
+
+        <Button
+          label="Line"
           disabled={!_.includes(availableTools, ToolType.Line)}
           onClick={() => {
-            this.props.store.setTool(ToolType.Line);
-          }}>
-          Line
-        </button>
+            store.setTool(ToolType.Line);
+          }}
+          active={store.selectedTool === ToolType.Line}
+        />
       </div>
     );
   };
 
   public render() {
+    const { store } = this.props;
     return (
       <div className={'sidebarPanel'}>
         <h2>Sidebar</h2>
@@ -96,29 +106,27 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
 
         <br />
 
-        <button
-          disabled={this.props.store.selectedPlugin ? false : true}
+        <Button
+          label={store.pluginActive ? 'Stop' : 'Apply'}
+          disabled={store.selectedPlugin ? false : true}
           onClick={() => {
-            this.props.store.togglePlugin();
-          }}>
-          {this.props.store.pluginActive ? 'Stop' : 'Apply'}
-        </button>
+            store.togglePlugin();
+          }}
+          active={store.pluginActive}
+        />
+
         <hr />
-        {this.props.store.point && (
+        {store.point && (
           <div>
-            {this.props.store.point.x} | {this.props.store.point.y}
+            {store.point.x} | {store.point.y}
           </div>
         )}
-        <div>{this.props.store.pixels ? 'Pixels' : 'noPixels'} </div>
-        {this.props.store.selectedTool && (
-          <div>{this.props.store.selectedTool}</div>
-        )}
+        <div>{store.pixels ? 'Pixels' : 'noPixels'} </div>
+        {store.selectedTool && <div>{store.selectedTool}</div>}
 
-        {this.props.store.distance && <div>{this.props.store.distance}</div>}
+        {store.distance && <div>{store.distance}</div>}
 
-        <div>
-          {this.props.store.mouseReleased ? 'Mouse Released' : 'M Not Released'}
-        </div>
+        <div>{store.mouseReleased ? 'Mouse Released' : 'M Not Released'}</div>
       </div>
     );
   }
