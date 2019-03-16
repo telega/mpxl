@@ -85,19 +85,22 @@ export class P5Sketch {
         return false;
       }
 
+      const x = p.mouseX < 0 ? 0 : p.mouxeX > p.width ? p.width : p.mouseX;
+      const y = p.mouseY < 0 ? 0 : p.mouseY > p.height ? p.height : p.mouseY;
+
       if (!this.store.pluginActive) {
         if (this.store.mouseReleased) {
-          this.store.setPoint({ x: p.mouseX, y: p.mouseY });
-          this.store.setEndPoint({ x: p.mouseX, y: p.mouseY });
+          this.store.setPoint({ x, y });
+          this.store.setEndPoint({ x, y });
           this.store.resetMouseReleased();
         } else {
-          this.store.setEndPoint({ x: p.mouseX, y: p.mouseY });
+          this.store.setEndPoint({ x, y });
         }
 
         if (!this.store.point) {
           this.store.setPoint({
-            x: p.mouseX,
-            y: p.mouseY,
+            x,
+            y,
           });
         }
 
@@ -122,7 +125,7 @@ export class P5Sketch {
       }
 
       if (!this.store.selectedTool) {
-        return;
+        return false;
       }
 
       switch (this.store.selectedTool) {
@@ -163,8 +166,9 @@ export class P5Sketch {
           );
           break;
         default:
-          return;
+          return false;
       }
+      return false;
     };
 
     p.draw = () => {
