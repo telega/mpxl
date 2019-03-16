@@ -2,7 +2,7 @@ import { observer } from 'mobx-react';
 import * as React from 'react';
 import { Store, ToolType } from '../stores/store';
 import * as _ from 'lodash';
-import { Select, Button } from 'grommet';
+import * as dg from 'dis-gui';
 
 export interface ISidebarProps {
   store: Store;
@@ -13,14 +13,14 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
   public renderPluginButtons = () => {
     const { store } = this.props;
     return store.availablePlugins.map((plugin, i) => {
+      const active = store.selectedPlugin === plugin;
       return (
-        <Button
-          label={plugin.name}
+        <dg.Button
           key={i}
+          label={active ? `>  ${plugin.name}` : plugin.name}
           onClick={() => {
             store.setSelectedPlugin(plugin);
           }}
-          active={store.selectedPlugin === plugin}
         />
       );
     });
@@ -32,17 +32,17 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
     if (!store.selectedPlugin) {
       return null;
     }
+
     return store.selectedPlugin.controls.map((controlItem, index) => (
-      <div key={`pluginControl-${index}`}>
-        {controlItem.label}
-        <Select
-          options={controlItem.options.map(option => option.value)}
-          onChange={(e: any) =>
-            store.setToolControlOption(controlItem.name, e.value)
-          }
-          value={store.toolControlOptions[controlItem.name]}
-        />
-      </div>
+      <dg.Select
+        label={controlItem.label}
+        key={`pluginControl-${index}`}
+        options={controlItem.options.map(option => option.value)}
+        onChange={(e: any) =>
+          store.setToolControlOption(controlItem.name, e.value)
+        }
+        value={store.toolControlOptions[controlItem.name]}
+      />
     ));
   };
 
@@ -52,68 +52,74 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
       ? store.selectedPlugin.tools
       : [];
 
-    return (
-      <div>
-        <Button
-          label="Point"
-          disabled={!_.includes(availableTools, ToolType.Point)}
-          onClick={() => {
-            store.setTool(ToolType.Point);
-          }}
-          active={store.selectedTool === ToolType.Point}
+    return availableTools.map((tool, i) => {
+      const active = store.selectedTool === tool;
+      const labelName = tool.charAt(0) + tool.substr(1).toLowerCase();
+      return (
+        <dg.Button
+          key={i}
+          label={active ? `> ${labelName}` : labelName}
+          onClick={() => store.setTool(tool as ToolType)}
         />
+      );
+    });
+  };
 
-        <Button
-          label="Square"
-          disabled={!_.includes(availableTools, ToolType.Square)}
-          onClick={() => {
-            store.setTool(ToolType.Square);
-          }}
-          active={store.selectedTool === ToolType.Square}
-        />
-
-        <Button
-          label="Circle"
-          disabled={!_.includes(availableTools, ToolType.Square)}
-          onClick={() => {
-            store.setTool(ToolType.Circle);
-          }}
-          active={store.selectedTool === ToolType.Circle}
-        />
-
-        <Button
-          label="Line"
-          disabled={!_.includes(availableTools, ToolType.Line)}
-          onClick={() => {
-            store.setTool(ToolType.Line);
-          }}
-          active={store.selectedTool === ToolType.Line}
-        />
-      </div>
-    );
+  public handleUpdate = data => {
+    console.log(data);
   };
 
   public render() {
     const { store } = this.props;
     return (
       <div className={'sidebarPanel'}>
-        <h2>Sidebar</h2>
-        {this.renderPluginButtons()}
-        <br />
-        {this.renderToolButtons()}
-        <br />
-        {this.renderPluginOptions()}
-
-        <br />
-
-        <Button
+        <dg.GUI
+          style={{
+            left: 0,
+          }}>
+          <dg.Folder label="Plugins" expanded>
+            {this.renderPluginButtons()}
+          </dg.Folder>
+          <dg.Folder label="Tools" expanded>
+            {this.renderToolButtons()}
+          </dg.Folder>
+          <dg.Folder
+            label={
+              store.selectedPlugin
+                ? `${store.selectedPlugin.name} Options`
+                : 'Options'
+            }
+            expanded>
+            {this.renderPluginOptions()}
+          </dg.Folder>
+          {/* <dg.Number
+            label="Horses"
+            value={2}
+            min={0}
+            max={4}
+            step={0.1}
+            onFinishChange={function(value) {
+              console.log(value);
+            }}
+          /> */}
+          <dg.Button
+            label={store.pluginActive ? 'Stop' : 'Apply'}
+            disabled={store.selectedPlugin ? false : true}
+            onClick={() => {
+              store.togglePlugin();
+            }}
+            active={store.pluginActive}
+          />
+          {/* 
+        {/* <Button
           label={store.pluginActive ? 'Stop' : 'Apply'}
           disabled={store.selectedPlugin ? false : true}
           onClick={() => {
             store.togglePlugin();
           }}
           active={store.pluginActive}
-        />
+        /> */}{' '}
+        </dg.GUI>
 
         <hr />
         {store.point && (

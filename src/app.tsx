@@ -4,7 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { ImagePanel } from './components/ImagePanel';
 import { Store } from './stores/store';
 import { observer } from 'mobx-react';
-import {Grommet} from 'grommet';
 
 export interface AppProps {}
 
@@ -22,7 +21,6 @@ export class App extends React.Component<AppProps, any> {
 
   render() {
     return (
-      <Grommet plain>
       <div className="container">
         <Sidebar store={this.store} />
         {this.store.availablePlugins.length > 0 && (
@@ -36,7 +34,6 @@ export class App extends React.Component<AppProps, any> {
           />
         )}
       </div>
-      </Grommet>
     );
   }
 }
