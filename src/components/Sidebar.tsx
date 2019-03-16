@@ -4,6 +4,8 @@ import { Store, ToolType } from '../stores/store';
 import * as _ from 'lodash';
 import * as dg from 'dis-gui';
 
+const isDevMode = process.execPath.match(/[\\/]electron/);
+
 export interface ISidebarProps {
   store: Store;
 }
@@ -80,7 +82,7 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
           <dg.Folder label="Plugins" expanded>
             {this.renderPluginButtons()}
           </dg.Folder>
-          <dg.Folder label="Tools" expanded>
+          <dg.Folder label="Tools" expanded={!!store.selectedPlugin}>
             {this.renderToolButtons()}
           </dg.Folder>
           <dg.Folder
@@ -89,50 +91,43 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
                 ? `${store.selectedPlugin.name} Options`
                 : 'Options'
             }
-            expanded>
+            expanded={!!store.selectedTool}>
             {this.renderPluginOptions()}
           </dg.Folder>
-          {/* <dg.Number
-            label="Horses"
-            value={2}
-            min={0}
-            max={4}
-            step={0.1}
-            onFinishChange={function(value) {
-              console.log(value);
-            }}
-          /> */}
-          <dg.Button
-            label={store.pluginActive ? 'Stop' : 'Apply'}
-            disabled={store.selectedPlugin ? false : true}
-            onClick={() => {
-              store.togglePlugin();
-            }}
-            active={store.pluginActive}
-          />
-          {/* 
-        {/* <Button
-          label={store.pluginActive ? 'Stop' : 'Apply'}
-          disabled={store.selectedPlugin ? false : true}
-          onClick={() => {
-            store.togglePlugin();
-          }}
-          active={store.pluginActive}
-        /> */}{' '}
-        </dg.GUI>
 
-        <hr />
-        {store.point && (
-          <div>
-            {store.point.x} | {store.point.y}
+          {!!store.selectedPlugin && !!store.selectedTool && (
+            <dg.Button
+              label={
+                store.pluginActive
+                  ? 'Stop'
+                  : `Apply ${store.selectedPlugin.name}`
+              }
+              disabled={store.selectedPlugin ? false : true}
+              onClick={() => {
+                store.togglePlugin();
+              }}
+              active={store.pluginActive}
+            />
+          )}
+        </dg.GUI>
+        {/* Debug info */}
+        {isDevMode && (
+          <div className="debug">
+            {store.point && (
+              <div>
+                {store.point.x} | {store.point.y}
+              </div>
+            )}
+            <div>{store.pixels ? 'Pixels' : 'noPixels'} </div>
+            {store.selectedTool && <div>{store.selectedTool}</div>}
+
+            {store.distance && <div>{store.distance}</div>}
+
+            <div>
+              {store.mouseReleased ? 'Mouse Released' : 'M Not Released'}
+            </div>
           </div>
         )}
-        <div>{store.pixels ? 'Pixels' : 'noPixels'} </div>
-        {store.selectedTool && <div>{store.selectedTool}</div>}
-
-        {store.distance && <div>{store.distance}</div>}
-
-        <div>{store.mouseReleased ? 'Mouse Released' : 'M Not Released'}</div>
       </div>
     );
   }

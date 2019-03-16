@@ -1,21 +1,29 @@
 .container {
-    min-width: 900px;
-    min-height: 600px;
-    max-width: 900px;
-    max-height: 600px;
-    display: inline-flex;
+  min-width: 900px;
+  min-height: 600px;
+  max-width: 900px;
+  max-height: 600px;
+  display: inline-flex;
 }
 
 .sidebarPanel {
-    min-width: 300px;
-    max-width: 300px;
-    max-height: 600px;
-    height: 600px;
+  min-width: 300px;
+  max-width: 300px;
+  max-height: 600px;
+  height: 600px;
+  background-color: rgb(26, 26, 26);
+}
+
+.debug {
+  color: red;
+  position: fixed;
+  bottom: 0;
 }
 
 .imagePanel {
-    max-width: 600px;
-    min-width: 600px;
-    max-height: 600px;
-    height: 600px;
+  max-width: 600px;
+  min-width: 600px;
+  max-height: 600px;
+  height: 600px;
+  background-color: #333;
 }
