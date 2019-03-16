@@ -8,7 +8,6 @@ export class P5Sketch {
   }
 
   public sketch = (p: any) => {
-    let img: any;
     let imgCopy: any;
 
     p.setup = function() {
@@ -17,7 +16,7 @@ export class P5Sketch {
 
     p.loadImageData = (filePath: string) => {
       this.store.resetPixels();
-      img = p.loadImage(`file:///${filePath}`, () => {
+      p.loadImage(`file:///${filePath}`, (img: any) => {
         imgCopy = img.get();
 
         imgCopy.resize(600, 0);

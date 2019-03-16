@@ -96,6 +96,7 @@ export class Store {
     this.ipcRenderer = ipcRenderer;
 
     this.ipcRenderer.on('loadImage', (_event: any, filePath: string) => {
+      this.resetEverything();
       this.setFilePath(filePath); // TODO move this function , async it
     });
 
@@ -107,6 +108,16 @@ export class Store {
 
   init = async () => {
     this.loadPlugins();
+  };
+
+  @action resetEverything = () => {
+    this.resetMouseReleased();
+    this.resetPixels();
+    this.resetDistance();
+    this.resetTool();
+    this.resetToolData();
+    this.resetActivePlugin();
+    this.hideToolArea();
   };
 
   @action
