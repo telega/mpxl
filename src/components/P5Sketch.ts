@@ -19,7 +19,10 @@ export class P5Sketch {
       p.loadImage(`file:///${filePath}`, (img: any) => {
         imgCopy = img.get();
 
-        imgCopy.resize(600, 0);
+        if (imgCopy.width > 600) {
+          imgCopy.resize(600, 0);
+        }
+
         if (imgCopy.height > 600) {
           imgCopy.resize(0, 600);
         }
