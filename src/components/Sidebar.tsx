@@ -95,20 +95,22 @@ export class Sidebar extends React.Component<ISidebarProps, any> {
             {this.renderPluginOptions()}
           </dg.Folder>
 
-          {!!store.selectedPlugin && !!store.selectedTool && (
-            <dg.Button
-              label={
-                store.pluginActive
-                  ? 'Stop'
-                  : `Apply ${store.selectedPlugin.name}`
-              }
-              disabled={store.selectedPlugin ? false : true}
-              onClick={() => {
-                store.togglePlugin();
-              }}
-              active={store.pluginActive}
-            />
-          )}
+          {!!store.selectedPlugin &&
+            !!store.selectedTool &&
+            !!store.toolAreaIsVisible && (
+              <dg.Button
+                label={
+                  store.pluginActive
+                    ? 'Stop'
+                    : `Apply ${store.selectedPlugin.name}`
+                }
+                disabled={store.selectedPlugin ? false : true}
+                onClick={() => {
+                  store.togglePlugin();
+                }}
+                active={store.pluginActive}
+              />
+            )}
         </dg.GUI>
         {/* Debug info */}
         {isDevMode && (

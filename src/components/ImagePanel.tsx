@@ -18,7 +18,11 @@ export class ImagePanel extends React.Component<IImagePanelProps, any> {
   public render() {
     return (
       <div className={'imagePanel'}>
-        <P5Wrapper sketch={this.sketch} filePath={this.props.store.filePath} />
+        <P5Wrapper
+          sketch={this.sketch}
+          filePath={this.props.store.filePath}
+          imageLoaded={this.props.store.imageLoaded}
+        />
       </div>
     );
   }

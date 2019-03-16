@@ -26,6 +26,7 @@ export class P5Sketch {
 
         p.resizeCanvas(imgCopy.width, imgCopy.height);
         p.updatePixels();
+        this.store.setImageLoaded();
         this.store.resetTool();
       });
     };
@@ -38,6 +39,10 @@ export class P5Sketch {
     };
 
     p.mouseReleased = () => {
+      if (!this.store.imageLoaded) {
+        return false;
+      }
+
       if (p.mouseX < 0 || p.mouseX > p.width) {
         return false;
       }
@@ -51,6 +56,10 @@ export class P5Sketch {
     };
 
     p.mouseClicked = () => {
+      if (!this.store.imageLoaded) {
+        return false;
+      }
+
       if (this.store.selectedTool !== ToolType.Point) {
         return false;
       }
@@ -72,6 +81,10 @@ export class P5Sketch {
     };
 
     p.mouseDragged = () => {
+      if (!this.store.imageLoaded) {
+        return false;
+      }
+
       if (!this.store.pluginActive) {
         if (this.store.mouseReleased) {
           this.store.setPoint({ x: p.mouseX, y: p.mouseY });
@@ -104,6 +117,10 @@ export class P5Sketch {
     };
 
     p.drawToolArea = () => {
+      if (!this.store.imageLoaded) {
+        return false;
+      }
+
       if (!this.store.selectedTool) {
         return;
       }

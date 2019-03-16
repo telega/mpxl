@@ -20,6 +20,14 @@
   bottom: 0;
 }
 
+.imageMessage {
+  color: whitesmoke;
+  font-family: Verdana, sans-serif;
+  width: 100%;
+  text-align: center;
+  margin-top: 100px;
+}
+
 .imagePanel {
   max-width: 600px;
   min-width: 600px;

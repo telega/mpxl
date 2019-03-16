@@ -5,6 +5,7 @@ import { P5Sketch } from './P5Sketch';
 export interface IP5WrapperProps {
   sketch: P5Sketch;
   filePath?: string;
+  imageLoaded: boolean;
 }
 
 export default class P5Wrapper extends React.Component<IP5WrapperProps, any> {
@@ -30,7 +31,11 @@ export default class P5Wrapper extends React.Component<IP5WrapperProps, any> {
 
   render() {
     return (
-      <div className="imageWrapper" ref={wrapper => (this.wrapper = wrapper)} />
+      <div className="imageWrapper" ref={wrapper => (this.wrapper = wrapper)}>
+        {!this.props.imageLoaded && (
+          <p className="imageMessage">No image loaded</p>
+        )}
+      </div>
     );
   }
 }

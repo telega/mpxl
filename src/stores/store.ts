@@ -42,8 +42,7 @@ export enum ToolType {
 }
 
 export class Store {
-  @observable
-  public myStoreThing: string;
+  @observable imageLoaded: boolean = false;
 
   @observable
   public point: Point = null;
@@ -122,6 +121,10 @@ export class Store {
 
   @action
   setShouldSave = () => {
+    if (!this.imageLoaded) {
+      return;
+    }
+
     this.shouldSave = true;
   };
 
@@ -196,6 +199,9 @@ export class Store {
 
   @action
   showToolArea = () => {
+    if (!this.imageLoaded) {
+      return;
+    }
     this.toolAreaIsVisible = true;
   };
 
@@ -215,16 +221,28 @@ export class Store {
 
   @action
   setPoint(point: Point) {
+    if (!this.imageLoaded) {
+      return;
+    }
+
     this.point = point;
   }
 
   @action
   setEndPoint(point: Point) {
+    if (!this.imageLoaded) {
+      return;
+    }
+
     this.endPoint = point;
   }
 
   @action
   setDistance = (distance: number) => {
+    if (!this.imageLoaded) {
+      return;
+    }
+
     this.distance = distance;
   };
 
@@ -235,6 +253,10 @@ export class Store {
 
   @action
   setMouseReleased = () => {
+    if (!this.imageLoaded) {
+      return;
+    }
+
     this.mouseReleased = true;
   };
 
@@ -293,5 +315,9 @@ export class Store {
         this.setToolControlOption(controlItem.name, defaultOption.value);
       }
     });
+  };
+
+  @action setImageLoaded = () => {
+    this.imageLoaded = true;
   };
 }
