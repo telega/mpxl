@@ -9,9 +9,11 @@ export class P5Sketch {
 
   public sketch = (p: any) => {
     let imgCopy: any;
+    let marchingAntsOffset: number;
 
     p.setup = function() {
       p.createCanvas(600, 600, p.P2D);
+      marchingAntsOffset = 0;
     };
 
     p.loadImageData = (filePath: string) => {
@@ -122,6 +124,82 @@ export class P5Sketch {
       return false;
     };
 
+    p.drawToolPoint = () => {
+      p.noFill();
+      p.drawingContext.setLineDash([]);
+      p.stroke('white');
+      p.ellipse(this.store.point.x, this.store.point.y, 3, 3);
+      p.drawingContext.setLineDash([4, 4]);
+      p.drawingContext.lineDashOffset = marchingAntsOffset;
+      p.stroke('black');
+      p.ellipse(this.store.point.x, this.store.point.y, 3, 3);
+    };
+
+    p.drawToolSquare = () => {
+      p.rectMode(p.CORNERS);
+      p.noFill();
+      p.drawingContext.setLineDash([]);
+      p.stroke('white');
+      p.rect(
+        this.store.point.x,
+        this.store.point.y,
+        this.store.endPoint.x,
+        this.store.endPoint.y
+      );
+      p.drawingContext.setLineDash([4, 4]);
+      p.drawingContext.lineDashOffset = marchingAntsOffset;
+      p.stroke('black');
+      p.rect(
+        this.store.point.x,
+        this.store.point.y,
+        this.store.endPoint.x,
+        this.store.endPoint.y
+      );
+      p.rectMode(p.CORNER);
+    };
+
+    p.drawToolCircle = () => {
+      p.noFill();
+      p.drawingContext.setLineDash([]);
+      p.stroke('white');
+      p.ellipse(
+        this.store.point.x,
+        this.store.point.y,
+        2 * this.store.distance,
+        2 * this.store.distance
+      );
+      p.drawingContext.setLineDash([4, 4]);
+      p.drawingContext.lineDashOffset = marchingAntsOffset;
+      p.stroke('black');
+      p.ellipse(
+        this.store.point.x,
+        this.store.point.y,
+        2 * this.store.distance,
+        2 * this.store.distance
+      );
+    };
+
+    p.drawToolLine = () => {
+      p.noFill();
+      p.drawingContext.setLineDash([]);
+      p.stroke('white');
+      p.line(
+        this.store.point.x,
+        this.store.point.y,
+        this.store.endPoint.x,
+        this.store.endPoint.y
+      );
+      p.drawingContext.setLineDash([4, 4]);
+      p.drawingContext.lineDashOffset = marchingAntsOffset;
+      p.stroke('black');
+      p.line(
+        this.store.point.x,
+        this.store.point.y,
+        this.store.endPoint.x,
+        this.store.endPoint.y
+      );
+    };
+
     p.drawToolArea = () => {
       if (!this.store.imageLoaded) {
         return false;
@@ -133,40 +211,16 @@ export class P5Sketch {
 
       switch (this.store.selectedTool) {
         case ToolType.Point:
-          p.stroke('red');
-          p.fill('red');
-          p.ellipse(this.store.point.x, this.store.point.y, 3, 3);
+          p.drawToolPoint();
           break;
         case ToolType.Square:
-          p.rectMode(p.CORNERS);
-          p.stroke('red');
-          p.noFill();
-          p.rect(
-            this.store.point.x,
-            this.store.point.y,
-            this.store.endPoint.x,
-            this.store.endPoint.y
-          );
-          p.rectMode(p.CORNER);
+          p.drawToolSquare();
           break;
         case ToolType.Line:
-          p.stroke('red');
-          p.line(
-            this.store.point.x,
-            this.store.point.y,
-            this.store.endPoint.x,
-            this.store.endPoint.y
-          );
+          p.drawToolLine();
           break;
         case ToolType.Circle:
-          p.stroke('red');
-          p.noFill();
-          p.ellipse(
-            this.store.point.x,
-            this.store.point.y,
-            2 * this.store.distance,
-            2 * this.store.distance
-          );
+          p.drawToolCircle();
           break;
         default:
           return false;
@@ -175,6 +229,7 @@ export class P5Sketch {
     };
 
     p.draw = () => {
+      marchingAntsOffset += 0.5;
       if (this.store.pixels) {
         p.pixels = this.store.pixels;
         p.updatePixels();
