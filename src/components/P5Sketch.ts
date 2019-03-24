@@ -1,5 +1,7 @@
-import { Store, Point, ToolType } from '../stores/store';
+import { Store } from '../stores/store';
 import { MPXLTools } from './MPXLTools';
+import { MPXLMouseHandlers } from './MPXLMouseHandlers';
+
 import p5 = require('p5');
 
 export interface MPXLSketch extends p5 {
@@ -10,17 +12,18 @@ export interface MPXLSketch extends p5 {
 
 export class P5Sketch {
   public store: Store;
-  public p: MPXLSketch;
   public tools: MPXLTools;
+  public mouseHandlers: MPXLMouseHandlers;
 
   constructor(store: Store) {
     this.store = store;
     this.tools = new MPXLTools(store);
+    this.mouseHandlers = new MPXLMouseHandlers(store);
   }
 
   public sketch = (p: MPXLSketch) => {
-    this.p = p;
     this.tools.init(p);
+    this.mouseHandlers.init(p);
     let imgCopy: any;
 
     p.setup = () => {
@@ -52,87 +55,6 @@ export class P5Sketch {
         await p.loadImageData(props.filePath);
       }
       return;
-    };
-
-    p.mouseReleased = () => {
-      if (!this.store.imageLoaded) {
-        return false;
-      }
-
-      if (p.mouseX < 0 || p.mouseX > p.width) {
-        return false;
-      }
-
-      if (p.mouseY < 0 || p.mouseY > p.height) {
-        return false;
-      }
-
-      this.store.setMouseReleased();
-      return false;
-    };
-
-    p.mouseClicked = () => {
-      if (!this.store.imageLoaded) {
-        return false;
-      }
-
-      if (this.store.selectedTool !== ToolType.Point) {
-        return false;
-      }
-
-      if (p.mouseX < 0 || p.mouseX > p.width) {
-        return false;
-      }
-
-      if (p.mouseY < 0 || p.mouseY > p.height) {
-        return false;
-      }
-
-      this.store.setPoint({
-        x: p.mouseX,
-        y: p.mouseY,
-      } as Point);
-
-      return false;
-    };
-
-    p.mouseDragged = () => {
-      if (!this.store.imageLoaded) {
-        return false;
-      }
-
-      const x = p.mouseX < 0 ? 0 : p.mouseX > p.width ? p.width : p.mouseX;
-      const y = p.mouseY < 0 ? 0 : p.mouseY > p.height ? p.height : p.mouseY;
-
-      if (!this.store.pluginActive) {
-        if (this.store.mouseReleased) {
-          this.store.setPoint({ x, y });
-          this.store.setEndPoint({ x, y });
-          this.store.resetMouseReleased();
-        } else {
-          this.store.setEndPoint({ x, y });
-        }
-
-        if (!this.store.point) {
-          this.store.setPoint({
-            x,
-            y,
-          });
-        }
-
-        this.store.setDistance(
-          p.dist(
-            this.store.point.x,
-            this.store.point.y,
-            this.store.endPoint.x,
-            this.store.endPoint.y
-          )
-        );
-        this.store.showToolArea();
-      }
-
-      // prevent default
-      return false;
     };
 
     p.draw = () => {
