@@ -1,19 +1,30 @@
 import { Store, Point, ToolType } from '../stores/store';
+import { MPXLTools } from './MPXLTools';
+import p5 = require('p5');
+
+export interface MPXLSketch extends p5 {
+  loadImageData: (filePath: string) => any;
+  newPropsHandler: (props: any) => any;
+  drawingContext: CanvasRenderingContext2D;
+}
 
 export class P5Sketch {
   public store: Store;
+  public p: MPXLSketch;
+  public tools: MPXLTools;
 
   constructor(store: Store) {
     this.store = store;
+    this.tools = new MPXLTools(store);
   }
 
-  public sketch = (p: any) => {
+  public sketch = (p: MPXLSketch) => {
+    this.p = p;
+    this.tools.init(p);
     let imgCopy: any;
-    let marchingAntsOffset: number;
 
-    p.setup = function() {
+    p.setup = () => {
       p.createCanvas(600, 600, p.P2D);
-      marchingAntsOffset = 0;
     };
 
     p.loadImageData = (filePath: string) => {
@@ -90,7 +101,7 @@ export class P5Sketch {
         return false;
       }
 
-      const x = p.mouseX < 0 ? 0 : p.mouxeX > p.width ? p.width : p.mouseX;
+      const x = p.mouseX < 0 ? 0 : p.mouseX > p.width ? p.width : p.mouseX;
       const y = p.mouseY < 0 ? 0 : p.mouseY > p.height ? p.height : p.mouseY;
 
       if (!this.store.pluginActive) {
@@ -124,126 +135,21 @@ export class P5Sketch {
       return false;
     };
 
-    p.drawToolPoint = () => {
-      p.noFill();
-      p.drawingContext.setLineDash([]);
-      p.stroke('white');
-      p.ellipse(this.store.point.x, this.store.point.y, 3, 3);
-      p.drawingContext.setLineDash([4, 4]);
-      p.drawingContext.lineDashOffset = marchingAntsOffset;
-      p.stroke('black');
-      p.ellipse(this.store.point.x, this.store.point.y, 3, 3);
-    };
-
-    p.drawToolSquare = () => {
-      p.rectMode(p.CORNERS);
-      p.noFill();
-      p.drawingContext.setLineDash([]);
-      p.stroke('white');
-      p.rect(
-        this.store.point.x,
-        this.store.point.y,
-        this.store.endPoint.x,
-        this.store.endPoint.y
-      );
-      p.drawingContext.setLineDash([4, 4]);
-      p.drawingContext.lineDashOffset = marchingAntsOffset;
-      p.stroke('black');
-      p.rect(
-        this.store.point.x,
-        this.store.point.y,
-        this.store.endPoint.x,
-        this.store.endPoint.y
-      );
-      p.rectMode(p.CORNER);
-    };
-
-    p.drawToolCircle = () => {
-      p.noFill();
-      p.drawingContext.setLineDash([]);
-      p.stroke('white');
-      p.ellipse(
-        this.store.point.x,
-        this.store.point.y,
-        2 * this.store.distance,
-        2 * this.store.distance
-      );
-      p.drawingContext.setLineDash([4, 4]);
-      p.drawingContext.lineDashOffset = marchingAntsOffset;
-      p.stroke('black');
-      p.ellipse(
-        this.store.point.x,
-        this.store.point.y,
-        2 * this.store.distance,
-        2 * this.store.distance
-      );
-    };
-
-    p.drawToolLine = () => {
-      p.noFill();
-      p.drawingContext.setLineDash([]);
-      p.stroke('white');
-      p.line(
-        this.store.point.x,
-        this.store.point.y,
-        this.store.endPoint.x,
-        this.store.endPoint.y
-      );
-      p.drawingContext.setLineDash([4, 4]);
-      p.drawingContext.lineDashOffset = marchingAntsOffset;
-      p.stroke('black');
-      p.line(
-        this.store.point.x,
-        this.store.point.y,
-        this.store.endPoint.x,
-        this.store.endPoint.y
-      );
-    };
-
-    p.drawToolArea = () => {
-      if (!this.store.imageLoaded) {
-        return false;
-      }
-
-      if (!this.store.selectedTool) {
-        return false;
-      }
-
-      switch (this.store.selectedTool) {
-        case ToolType.Point:
-          p.drawToolPoint();
-          break;
-        case ToolType.Square:
-          p.drawToolSquare();
-          break;
-        case ToolType.Line:
-          p.drawToolLine();
-          break;
-        case ToolType.Circle:
-          p.drawToolCircle();
-          break;
-        default:
-          return false;
-      }
-      return false;
-    };
-
     p.draw = () => {
-      marchingAntsOffset += 0.5;
       if (this.store.pixels) {
-        p.pixels = this.store.pixels;
+        p.pixels = this.store.pixels as any;
         p.updatePixels();
       } else if (imgCopy) {
         p.image(imgCopy, 0, 0);
       }
 
       if (this.store.toolAreaIsVisible) {
-        p.drawToolArea();
+        this.tools.drawToolArea();
       }
 
       if (this.store.selectedPlugin && this.store.pluginActive) {
         this.store.selectedPlugin.plugin(p, this.store.toolData());
-        this.store.setPixels(p.pixels);
+        this.store.setPixels(p.pixels as any);
         this.store.togglePlugin();
       }
 
