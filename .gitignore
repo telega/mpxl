@@ -2,8 +2,10 @@
 bower_components
 node_modules
 dist
+out
 
 #files
 *.tgz
 *.log
 .DS_Store
+.compilerc

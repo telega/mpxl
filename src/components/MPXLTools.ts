@@ -3,6 +3,7 @@ import { Store, ToolType } from '../stores/store';
 
 const marchingAntsOffset = 0.5;
 
+/** Class for displaying various plugin-accessible tools using store data */
 export class MPXLTools {
   public p: MPXLSketch;
   public store: Store;
@@ -11,10 +12,14 @@ export class MPXLTools {
     this.store = store;
   }
 
+  /** initialise the class so it can act on the p5 sketch
+   * @param p - the sketch
+   */
   public init(p: MPXLSketch) {
     this.p = p;
   }
 
+  /** indicates a single point */
   private drawToolPoint = () => {
     const { p, store } = this;
     p.noFill();
@@ -27,6 +32,7 @@ export class MPXLTools {
     p.ellipse(store.point.x, store.point.y, 3, 3);
   };
 
+  /** indicates a rectangle */
   private drawToolSquare = () => {
     const { p, store } = this;
     p.rectMode(p.CORNERS);
@@ -41,6 +47,7 @@ export class MPXLTools {
     p.rectMode(p.CORNER);
   };
 
+  /** indicates a circle */
   private drawToolCircle = () => {
     const { p, store } = this;
     p.noFill();
@@ -63,6 +70,7 @@ export class MPXLTools {
     );
   };
 
+  /** indicates a line */
   private drawToolLine = () => {
     const { p, store } = this;
     p.noFill();
@@ -75,6 +83,7 @@ export class MPXLTools {
     p.line(store.point.x, store.point.y, store.endPoint.x, store.endPoint.y);
   };
 
+  /** Used in the draw loop to show the selected tool */
   public drawToolArea = () => {
     const { store } = this;
     if (!store.imageLoaded) {

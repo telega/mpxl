@@ -1,6 +1,7 @@
 import { MPXLSketch } from './P5Sketch';
 import { Store, ToolType, Point } from '../stores/store';
 
+/** Class for handling mouse events and updating the store */
 export class MPXLMouseHandlers {
   public store: Store;
   public p: MPXLSketch;
@@ -8,6 +9,9 @@ export class MPXLMouseHandlers {
     this.store = store;
   }
 
+  /** Assigns the handlers to the p5 sketch
+   * @param p the sketch
+   */
   public init(p: MPXLSketch) {
     this.p = p;
     this.p.mouseDragged = this.mouseDragged;

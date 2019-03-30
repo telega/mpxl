@@ -50,6 +50,7 @@ export class P5Sketch {
       });
     };
 
+    /** if react sends new props, it will trigger this */
     p.newPropsHandler = async function(props: any) {
       if (props.filePath) {
         await p.loadImageData(props.filePath);
